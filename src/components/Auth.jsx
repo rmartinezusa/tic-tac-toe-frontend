@@ -1,9 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useLoginMutation, useRegisterMutation } from "../services/authSlice";
+import { selectToken } from "../services/authSlice";
 
 function Auth() {
     const navigate = useNavigate();
+    const token = useSelector(selectToken);
+
+    useEffect(() => {
+        if (token) {
+            navigate("/home"); // Redirect authenticated users to Home
+        }
+    }, [token, navigate]);
     
     const [login, { error: loginError }] = useLoginMutation();
     const [register, { error: registerError }] = useRegisterMutation();
