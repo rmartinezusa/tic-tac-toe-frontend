@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import api from "../store/api";
+import { jwtDecode } from "jwt-decode";
 
-//auth endpoints: register, login
+// auth endpoints: register, login
 const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    //register
+    // register
     register: builder.mutation({
       query: (credentials) => ({
         url: "/register",
@@ -13,7 +14,7 @@ const authApi = api.injectEndpoints({
       }),
       invalidatesTags: ["User"],
     }),
-    //login
+    // login
     login: builder.mutation({
       query: (credentials) => ({
         url: "/login",
@@ -27,16 +28,32 @@ const authApi = api.injectEndpoints({
 
 export const { useLoginMutation, useRegisterMutation } = authApi;
 
-//session token
+// session token
 const TOKEN_KEY = "token";
 
-//store token in state and session
-const storeToken = (state, { payload }) => {
-  state.token = payload.token;
-  sessionStorage.setItem(TOKEN_KEY, payload.token);
+// Function to check if the token is expired
+function isTokenExpired() {
+  try {
+    const decoded = jwtDecode(token);
+    return decoded.exp * 1000 < Date.now(); 
+  } catch (error) {
+    return true;  // If error in decoding, treat it as expired
+  }
 };
 
-//slice for JWT from API
+// store token in state and session
+function storeToken(state, { payload }) {
+  const token = payload.token;
+  if (isTokenExpired(token)) {
+    state.token = null;
+    sessionStorage.removeItem(TOKEN_KEY);
+  } else {
+    state.token = token;
+    sessionStorage.setItem(TOKEN_KEY, token);
+  }
+};
+
+// slice for JWT from API
 const authSlice = createSlice({
   name: "auth",
   initialState: {
@@ -48,14 +65,14 @@ const authSlice = createSlice({
       sessionStorage.removeItem(TOKEN_KEY);
     },
   },
-  //update token for mutations
+  // update token for mutations
   extraReducers: (builder) => {
     builder.addMatcher(api.endpoints.login.matchFulfilled, storeToken);
     builder.addMatcher(api.endpoints.register.matchFulfilled, storeToken);
   },
 });
 
-//exports
+// exports
 export const { logout } = authSlice.actions;
 export const selectToken = (state) => state.auth.token;
 export default authSlice.reducer;
