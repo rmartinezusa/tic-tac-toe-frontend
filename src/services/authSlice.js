@@ -32,7 +32,7 @@ export const { useLoginMutation, useRegisterMutation } = authApi;
 const TOKEN_KEY = "token";
 
 // Function to check if the token is expired
-function isTokenExpired() {
+function isTokenExpired(token) {
   try {
     const decoded = jwtDecode(token);
     return decoded.exp * 1000 < Date.now(); 
