@@ -3,16 +3,16 @@ import api from "../store/api";
 const gameApi = api.injectEndpoints({
   endpoints: (build) => ({
     getGames: build.query({
-      query: () => "/game",
+      query: () => "/games",
       providesTags: ["Game"],
     }),
     getGame: build.query({
-      query: (id) => `/game/${id}`,
+      query: (id) => `/games/${id}`,
       providesTags: ["Game"],
     }),
     createGame: build.mutation({
       query: (players) => ({
-        url: "/game",
+        url: "/games",
         method: "POST",
         body: players,
       }),

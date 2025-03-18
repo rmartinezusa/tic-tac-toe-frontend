@@ -37,7 +37,7 @@ function isTokenExpired(token) {
     const decoded = jwtDecode(token);
     return decoded.exp * 1000 < Date.now(); 
   } catch (error) {
-    return true;  // If error in decoding, treat it as expired
+    return true;
   }
 };
 
@@ -46,9 +46,11 @@ function storeToken(state, { payload }) {
   const token = payload.token;
   if (isTokenExpired(token)) {
     state.token = null;
+    state.userId = null;
     sessionStorage.removeItem(TOKEN_KEY);
   } else {
     state.token = token;
+    state.userId = decoded.id;
     sessionStorage.setItem(TOKEN_KEY, token);
   }
 };
@@ -58,10 +60,12 @@ const authSlice = createSlice({
   name: "auth",
   initialState: {
     token: sessionStorage.getItem(TOKEN_KEY),
+    userId: sessionStorage.getItem(TOKEN_KEY) ? jwtDecode(sessionStorage.getItem(TOKEN_KEY)).id : null,
   },
   reducers: {
     logout: (state) => {
       state.token = null;
+      state.userId = null;
       sessionStorage.removeItem(TOKEN_KEY);
     },
   },
@@ -75,4 +79,5 @@ const authSlice = createSlice({
 // exports
 export const { logout } = authSlice.actions;
 export const selectToken = (state) => state.auth.token;
+export const selectUserId = (state) => state.auth.userId;
 export default authSlice.reducer;

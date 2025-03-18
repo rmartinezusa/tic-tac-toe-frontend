@@ -4,7 +4,7 @@ import Root from './layout/Root';
 
 import Auth from "./components/Auth";
 import Home from './components/Home';
-import Game from "./components/Game";
+import Games from "./components/Games";
 
 
 const router = createBrowserRouter([
@@ -14,7 +14,7 @@ const router = createBrowserRouter([
         children:[
             { path: "/", element:<Auth /> },
             { path: "/home", element:<Home /> },
-            { path: "/game", element:<Game /> },
+            { path: "/games", element:<Games /> },
         ]
     }
 ]); 
