@@ -18,7 +18,17 @@ const gameApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Game"],
     }),
+    checkActiveGame: build.query({
+      query: ({ playerXId, playerOId }) =>
+        `/games/active?playerXId=${playerXId}&playerOId=${playerOId}`,
+      providesTags: ["Game"],
+    }),
   }),
 });
 
-export const { useGetGamesQuery, useGetGameQuery, useCreateGameMutation } = gameApi;
+export const { 
+  useGetGamesQuery, 
+  useGetGameQuery, 
+  useCreateGameMutation, 
+  useCheckActiveGameQuery, 
+} = gameApi;

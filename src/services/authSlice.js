@@ -50,7 +50,7 @@ function storeToken(state, { payload }) {
     sessionStorage.removeItem(TOKEN_KEY);
   } else {
     state.token = token;
-    state.userId = decoded.id;
+    state.userId = jwtDecode(token).id;
     sessionStorage.setItem(TOKEN_KEY, token);
   }
 };
