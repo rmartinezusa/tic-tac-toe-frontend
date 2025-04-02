@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useLoginMutation, useRegisterMutation } from "../services/authSlice";
 import { selectToken } from "../services/authSlice";
+import { connectSocket, disconnectSocket } from "../socket";
 
 function Auth() {
     const navigate = useNavigate();
@@ -43,7 +44,10 @@ function Auth() {
         const credentials = { username: username.trim(), password: password.trim() };  // Using trim() on username & password to prevent leading/trailing spaces.
 
         try {
-            await loginMethod(credentials).unwrap();
+            const result = await loginMethod(credentials).unwrap();
+            const token = result.token;
+
+            connectSocket(token);
             navigate("/home");
         } catch (e) {
             console.error("Authentication failed:", e);
@@ -51,6 +55,13 @@ function Auth() {
 
         }
     };
+
+    // this function handels logouts. I dont know if i wanna use this yet.
+    function handleLogout() {
+        disconnectSocket(); // Disconnect socket on logout
+        dispatch(logout());
+        navigate("/");
+    }
 
     return (
         <main>

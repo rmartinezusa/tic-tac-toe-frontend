@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import socket from "../socket"; 
+import {connectSocket} from "../socket"; 
+const socket = connectSocket();
 
 const moveSlice = createSlice({
   name: "move",

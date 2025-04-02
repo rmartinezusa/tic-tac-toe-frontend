@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import socket from "../socket";
+import { connectSocket } from "../socket";
+const socket = connectSocket()
 
 function GameBoard() {
     // This file is just a placeholder for now....

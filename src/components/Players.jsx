@@ -1,7 +1,7 @@
 import { useGetUsersQuery } from "../services/userSlice";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import socket from "../socket";
+import { connectSocket } from "../socket";
 import { selectUserId } from "../services/authSlice";
 import { useCreateGameMutation, useCheckActiveGameQuery } from "../services/gameSlice";
 import { useState, useEffect } from "react";
@@ -23,8 +23,14 @@ function Players() {
     useEffect(() => {
         if (selectedOpponent && !isCheckingGame) {
             if (activeGameData?.activeGame) {
-                alert("You already have an ongoing game with this player.");
-                setSelectedOpponent(null); // Reset opponent selection
+                const gameId = activeGameData.activeGame.id;
+                alert("You already have an ongoing game with this player."); // I dont think i want this here but it'll stay for now.
+                //  setSelectedOpponent(null); // Reset opponent selection. this line is probably incorrect!!! HERE!!!
+                //socket.emit("joinGame", { activeGameData[activeGame],  userId }); // HERE!!!! I am probaly going to need some logic here to set correct IDs to correct playerX and playerO.
+                socket.emit("joinGame", { gameId,  userId });
+
+                navigate(`/board`);
+                //navigate(`/board/${activeGameData.activeGame.id}`);
                 return;
             }
 
@@ -43,7 +49,8 @@ function Players() {
             const gameId = data.id;
 
             socket.emit("joinGame", { gameId, userId });
-            navigate(`/games/${gameId}`);
+            navigate(`/board`);
+            //navigate(`/board/${gameId}`);
         } catch (e) {
             console.error("Failed to create game:", e);
         }
@@ -58,8 +65,8 @@ function Players() {
             {isCreatingGame && <p>Creating game...</p>}
             {createGameError && <p>Error creating game: {createGameError.data.error || "Try again"}</p>}
             {isCheckingGame && <p>Checking for active games...</p>}
-            <ul>
-                {users?.map((user) => (
+            <ul>    
+                {users?.filter(user => user.id !== userId).map(user => (
                     <li key={user.id}>
                         <button onClick={() => handleSelectPlayer(user.id)}>
                             {user.username}
