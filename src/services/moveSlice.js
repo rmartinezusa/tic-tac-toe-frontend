@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {connectSocket} from "../socket"; 
-const socket = connectSocket();
 
+// Initialize the move slice
 const moveSlice = createSlice({
   name: "move",
   initialState: {
@@ -21,29 +20,41 @@ const moveSlice = createSlice({
 // Actions
 export const { moveMade, moveError } = moveSlice.actions;
 
-// Thunk function to handle moves
-export const makeMove = (gameId, playerId, position) => (dispatch) => {
-  socket.emit("makeMove", { gameId, playerId, position });
+// Thunk function to handle moves (note the use of a dynamic socket from context)
+export const makeMove = (gameId, playerId, position) => (dispatch, getState) => {
+  const socket = getState().socket; 
 
-  // Listen for response after making a move
-  socket.once("moveMade", (move) => {
-    dispatch(moveMade(move));
-  });
+  if (socket) {
+    socket.emit("makeMove", { gameId, playerId, position });
 
-  socket.once("error", (errorMsg) => {
-    dispatch(moveError(errorMsg));
-  });
+    // Listen for response after making a move
+    socket.once("moveMade", (move) => {
+      dispatch(moveMade(move));
+    });
+
+    socket.once("error", (errorMsg) => {
+      dispatch(moveError(errorMsg));
+    });
+  } else {
+    dispatch(moveError("Socket is not connected"));
+  }
 };
 
 // Listen for real-time moves when the component mounts
-export const listenForMoves = () => (dispatch) => {
-  socket.on("moveMade", (move) => {
-    dispatch(moveMade(move));
-  });
+export const listenForMoves = () => (dispatch, getState) => {
+  const socket = getState().socket; 
 
-  socket.on("error", (errorMsg) => {
-    dispatch(moveError(errorMsg));
-  });
+  if (socket) {
+    socket.on("moveMade", (move) => {
+      dispatch(moveMade(move));
+    });
+
+    socket.on("error", (errorMsg) => {
+      dispatch(moveError(errorMsg));
+    });
+  } else {
+    dispatch(moveError("Socket is not connected"));
+  }
 };
 
 export default moveSlice.reducer;

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { connectSocket } from "../socket";
-const socket = connectSocket()
+import { useSocket } from "../context/SocketContext";
 
 function GameBoard() {
     // This file is just a placeholder for now....
@@ -11,6 +10,7 @@ function GameBoard() {
     const [board, setBoard] = useState(Array(9).fill(null)); // Tic Tac Toe board
     const [currentTurn, setCurrentTurn] = useState(null); // Track the player's turn
     const [winner, setWinner] = useState(null); // Track the winner
+    const socket = useSocket();
 
     useEffect(() => {
         if (!gameId) return;

@@ -1,80 +1,63 @@
-import { useGetUsersQuery } from "../services/userSlice";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { connectSocket } from "../socket";
+
 import { selectUserId } from "../services/authSlice";
-import { useCreateGameMutation, useCheckActiveGameQuery } from "../services/gameSlice";
-import { useState, useEffect } from "react";
-import { skipToken } from "@reduxjs/toolkit/query";
+import { useGetUsersQuery } from "../services/userSlice";
+import { useCreateGameMutation } from "../services/gameSlice";
+
+import { useSocket } from "../context/SocketContext";
 
 function Players() {
     const { data: users, isLoading, error } = useGetUsersQuery();
+    const userId = useSelector(selectUserId);
     const [createGameMutation, { isLoading: isCreatingGame, error: createGameError }] = useCreateGameMutation();
     const navigate = useNavigate();
-    const userId = useSelector(selectUserId);
-
-    const [selectedOpponent, setSelectedOpponent] = useState(null);
-
-    // Fetch active game data when an opponent is selected
-    const { data: activeGameData, isFetching: isCheckingGame } = useCheckActiveGameQuery(
-        selectedOpponent ? { playerXId: userId, playerOId: selectedOpponent } : skipToken
-    );
+    const socket = useSocket();
 
     useEffect(() => {
-        if (selectedOpponent && !isCheckingGame) {
-            if (activeGameData?.activeGame) {
-                const gameId = activeGameData.activeGame.id;
-                alert("You already have an ongoing game with this player."); // I dont think i want this here but it'll stay for now.
-                //  setSelectedOpponent(null); // Reset opponent selection. this line is probably incorrect!!! HERE!!!
-                //socket.emit("joinGame", { activeGameData[activeGame],  userId }); // HERE!!!! I am probaly going to need some logic here to set correct IDs to correct playerX and playerO.
-                socket.emit("joinGame", { gameId,  userId });
+        if (!socket) return;
 
-                navigate(`/board`);
-                //navigate(`/board/${activeGameData.activeGame.id}`);
-                return;
-            }
+        const handleGameStart = (data) => {
+            console.log(`Game started: ${data.gameId}`);
+            navigate(`/board/${data.gameId}`);
+        };
 
-            createNewGame(selectedOpponent);
-        }
-    }, [selectedOpponent, activeGameData, isCheckingGame]);
+        socket.on("game-start", handleGameStart);
 
-    function handleSelectPlayer(opponentId) {
-        if (!userId) return console.error("User ID not found in state");
-        setSelectedOpponent(opponentId);
-    }
+        return () => {
+            socket.off("game-start", handleGameStart);
+        };
+    }, [socket, navigate]);
 
-    async function createNewGame(opponentId) {
-        try {
-            const data = await createGameMutation({ playerXId: userId, playerOId: opponentId }).unwrap();
-            const gameId = data.id;
+    const handleSelectPlayer = (opponentId) => {
+        console.log(opponentId);
 
-            socket.emit("joinGame", { gameId, userId });
-            navigate(`/board`);
-            //navigate(`/board/${gameId}`);
-        } catch (e) {
-            console.error("Failed to create game:", e);
-        }
-    }
+        if (!socket || !userId) return;
 
-    if (isLoading) return <p>Loading players...</p>;
-    if (error) return <p>{JSON.stringify(error.data) || "We have encountered an error..."}</p>;
+        socket.emit("create-game", {
+            opponentId,
+            userId,
+        });
+    };
 
     return (
         <section>
             <h2>Select player to start a new game</h2>
             {isCreatingGame && <p>Creating game...</p>}
             {createGameError && <p>Error creating game: {createGameError.data.error || "Try again"}</p>}
-            {isCheckingGame && <p>Checking for active games...</p>}
-            <ul>    
-                {users?.filter(user => user.id !== userId).map(user => (
-                    <li key={user.id}>
-                        <button onClick={() => handleSelectPlayer(user.id)}>
-                            {user.username}
-                        </button>
-                    </li>
-                ))}
+            <ul>
+                {
+                    users?.filter(user => user.id !== userId).map(user => (
+                        <li key={user.id}>
+                            <button onClick={() => handleSelectPlayer(user.id)}>
+                                {user.username}
+                            </button>
+                        </li>
+                    ))
+                }
             </ul>
-        </section>
+        </section>        
     );
 }
 

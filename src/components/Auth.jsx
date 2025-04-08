@@ -3,11 +3,12 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useLoginMutation, useRegisterMutation } from "../services/authSlice";
 import { selectToken } from "../services/authSlice";
-import { connectSocket, disconnectSocket } from "../socket";
+import { useSocket } from "../context/SocketContext";
 
 function Auth() {
     const navigate = useNavigate();
     const token = useSelector(selectToken);
+    const socket = useSocket();
 
     useEffect(() => {
         if (token) {
@@ -47,7 +48,6 @@ function Auth() {
             const result = await loginMethod(credentials).unwrap();
             const token = result.token;
 
-            connectSocket(token);
             navigate("/home");
         } catch (e) {
             console.error("Authentication failed:", e);
