@@ -30,8 +30,9 @@ function GameBoard() {
             setCurrentTurn(turn);
         });
 
-        socket.on("gameOver", ({ winner }) => {
+        socket.on("gameOver", ({ board, winner }) => {
             setWinner(winner);
+            setBoard(board);
         });
 
         socket.on("playersInGame", ({ count }) => {
