@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -10,6 +10,7 @@ import { useSocket } from "../context/SocketContext";
 function Players() {
     const { data: users, isLoading, error } = useGetUsersQuery();
     const userId = useSelector(selectUserId);
+    const [userStatus, setUserStatus] = useState({});
     const navigate = useNavigate();
     const socket = useSocket();
 
@@ -21,10 +22,35 @@ function Players() {
             navigate(`/gameboard/${data.gameId}`);
         };
 
+        const handleUserStatus = ({ userId, status }) => {
+            setUserStatus((prevStatus) => ({
+                ...prevStatus,
+                [userId]: status,
+            }));
+        };
+
+        const handleOnlineUsers = ({ onlineUserIds }) => {
+            const newStatuses = {};
+          
+            onlineUserIds.forEach((id) => {
+                newStatuses[id] = "online";
+            });
+            setUserStatus((prev) => ({
+                ...prev,
+                ...newStatuses,
+            }));
+        };
+
         socket.on("game-start", handleGameStart);
+        socket.on("user-status", handleUserStatus);
+        socket.on("online-users", handleOnlineUsers);
+
+        socket.emit("request-online-users");
 
         return () => {
             socket.off("game-start", handleGameStart);
+            socket.off("user-status", handleUserStatus);
+            socket.off("online-users", handleOnlineUsers);
         };
     }, [socket, navigate]);
 
@@ -42,15 +68,18 @@ function Players() {
         <section>
             <h2>Select player to start a new game</h2>
             <ul>
-                {
-                    users?.filter(user => user.id !== userId).map(user => (
-                        <li key={user.id}>
-                            <button onClick={() => handleSelectPlayer(user.id)}>
-                                {user.username}
-                            </button>
-                        </li>
-                    ))
-                }
+                {users?.filter(user => user.id !== userId).map(user => (
+                    <li key={user.id}>
+                        <button onClick={() => handleSelectPlayer(user.id)}>
+                            {user.username}
+                            {userStatus[user.id] === "online" ? (
+                                <span style={{ color: "green", marginLeft: "5px" }}>🟢</span>
+                            ) : (
+                                <span style={{ color: "gray", marginLeft: "5px" }}>⚫</span>
+                            )}
+                        </button>
+                    </li>
+                ))}
             </ul>
         </section>        
     );
