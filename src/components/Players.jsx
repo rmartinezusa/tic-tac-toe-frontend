@@ -60,7 +60,6 @@ function Players() {
 
         socket.emit("create-game", {
             opponentId,
-            userId,
         });
     };
 
