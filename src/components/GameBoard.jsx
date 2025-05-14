@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useGetGameQuery } from "../services/gameSlice";
 import { selectUserId } from "../services/authSlice";
@@ -11,6 +11,7 @@ function GameBoard() {
     const userId = useSelector(selectUserId);
     const { gameId } = useParams();
     const socket = useSocket();
+    const navigate = useNavigate();
     const { data: gameData } = useGetGameQuery(gameId);
     const [board, setBoard] = useState(Array(9).fill(null));
     const [currentTurn, setCurrentTurn] = useState("X");
@@ -46,9 +47,19 @@ function GameBoard() {
         };
     }, [gameId, socket]);
 
-    const handleMove = (index) => {
+    function handleMove(index) {
         if (!winner && board[index] === null && isMyTurn) {
             socket.emit("makeMove", { gameId, index, playerId: userId });
+        }
+    };
+
+    function gameStatusMessage() {
+        if (winner === null && board.every(cell => cell !== null)) {
+            return "Game ended in a TIE";
+        } else if (winner) {
+            return `Winner: ${winner}`;
+        } else {
+            return `Turn: ${currentTurn}`;
         }
     };
 
@@ -56,6 +67,7 @@ function GameBoard() {
         <main>
             <h1>Game ID: {gameId}</h1>
             <h2>{winner ? `Winner: ${winner}` : `Turn: ${currentTurn}`}</h2>
+            <h2>{gameStatusMessage()}</h2>
             <h3>You are: {playerSymbol}</h3>
             <h3>Players Online: {playersOnline}/2</h3>
 
@@ -74,6 +86,11 @@ function GameBoard() {
                     <Square key={i + 6} value={value} onSquareClick={() => handleMove(i + 6)} disabled={value !== null || winner} />
                 ))}
             </div>
+            {
+                winner !== null || board.every(cell => cell !== null) ? (
+                    <button onClick={() => navigate("/home")}>Exit Game</button>
+                ) : null
+            }
         </main>
     );
 }
