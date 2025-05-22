@@ -8,7 +8,6 @@ import { useSocket } from "../context/SocketContext";
 function Auth() {
     const navigate = useNavigate();
     const token = useSelector(selectToken);
-    const socket = useSocket();
 
     useEffect(() => {
         if (token) {
@@ -64,9 +63,10 @@ function Auth() {
     }
 
     return (
-        <main>
-            <h1>{isLogin ? "Login" : "Register"}</h1>
-            <form onSubmit={ authenticateFunction }>
+        <div className="center-sign-in">
+            <h1 className="title-header">LiveTicTacToe</h1>
+            <h2 className="auth-header">{isLogin ? "Login" : "Register"}</h2>
+            <form className="flex-auth-container" onSubmit={ authenticateFunction }>
                 <label>
                     Username:
                     <input 
@@ -105,16 +105,17 @@ function Auth() {
                     </label>
                 )}
                 
-                <button type="submit" className="">{authEvent}</button>
+                <button className="auth-button" type="submit">{authEvent}</button>
             </form>
-            <button type="button" onClick={() => setIsLogin(!isLogin)}>
+
+            <button className="auth-button register-button" type="button" onClick={() => setIsLogin(!isLogin)}>
                 {altCopy}
             </button>
 
             {localError && <p role="alert">{localError}</p>} 
             {isLogin && loginError && <p role="alert">{loginError.data}</p>}
             {!isLogin && registerError && <p role="alert">{registerError.data}</p>}
-        </main>
+        </div>
     );
 }
 export default Auth;

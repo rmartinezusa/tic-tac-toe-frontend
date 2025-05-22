@@ -7,6 +7,14 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #fffeec;
 
+  --black: #000;
+  
+  --light-almond: #fffeec;
+  --light-almond-2: #fffee0;
+
+  --deep-charcoal: #252525;
+  --grey-button: #484848;
+  --grey-hover-button: #555555;
 }
-
