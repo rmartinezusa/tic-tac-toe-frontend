@@ -65,22 +65,20 @@ function Players() {
 
     return (
         <section>
-            <h2>Select player to start a new game</h2>
-            <ul>
-                {users?.filter(user => user.id !== userId).map(user => (
-                    <li key={user.id}>
-                        <button onClick={() => handleSelectPlayer(user.id)}>
-                            {user.username}
-                            {userStatus[user.id] === "online" ? (
-                                <span style={{ color: "green", marginLeft: "5px" }}>🟢</span>
-                            ) : (
-                                <span style={{ color: "gray", marginLeft: "5px" }}>⚫</span>
-                            )}
-                        </button>
-                    </li>
+            <h2 className="player-">Select player to start a new game</h2>
+            <div className="player-grid">
+                {
+                users?.filter(user => user.id !== userId).map(user => (
+                    <div key={user.id} className="player-card">
+                        <h3>{user.username}</h3>
+                        <p className={userStatus[user.id] === "online" ? "online" : "offline"}>
+                            {userStatus[user.id] === "online" ? "🟢 Online" : "⚫ Offline"}
+                        </p>
+                        <button onClick={() => handleSelectPlayer(user.id)}>Start Game</button>
+                    </div>
                 ))}
-            </ul>
-        </section>        
+            </div>
+        </section>
     );
 }
 

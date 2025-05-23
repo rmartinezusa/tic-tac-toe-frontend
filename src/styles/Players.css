@@ -1,0 +1,32 @@
+.player-grid {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  gap: 1rem;
+}
+
+.player-card {
+  background: #222;
+  color: #eee;
+  padding: 1rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  text-align: center;
+}
+
+.player-card button {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #444;
+  color: white;
+  cursor: pointer;
+}
+
+.player-card .online {
+  color: limegreen;
+}
+
+.player-card .offline {
+  color: gray;
+}

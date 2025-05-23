@@ -19,9 +19,11 @@ function Home() {
 
     return (
         <main>
-            <h1>Tic Tac Toe</h1>
-            <Games />
-            <Players />
+            <h1 className="home-title-heade">Tic Tac Toe</h1>
+            <div className="flex-container">
+                <Games />
+                <Players />
+            </div>
         </main>
     );
 }
