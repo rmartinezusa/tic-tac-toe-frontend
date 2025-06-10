@@ -64,31 +64,32 @@ function GameBoard() {
     };
 
     return (
-        <main>
-            <h1>Game ID: {gameId}</h1>
-            <h2>{winner ? `Winner: ${winner}` : `Turn: ${currentTurn}`}</h2>
-            <h2>{gameStatusMessage()}</h2>
-            <h3>You are: {playerSymbol}</h3>
-            <h3>Players Online: {playersOnline}/2</h3>
+        <main className="main-gameBoard">
+            <h1>Tic Tac Toe</h1>
+            <h2 className="h2-gameBoard">{gameStatusMessage()}</h2>
+            <h3 className="h3-gameBoard">You are: {playerSymbol}</h3>
+            <h3 className="h3-gameBoard">Players Online: {playersOnline}/2</h3>
 
-            <div className="board-row">
-                {board.slice(0, 3).map((value, i) => (
-                    <Square key={i} value={value} onSquareClick={() => handleMove(i)} disabled={value !== null || winner} />
-                ))}
-            </div>
-            <div className="board-row">
-                {board.slice(3, 6).map((value, i) => (
-                    <Square key={i + 3} value={value} onSquareClick={() => handleMove(i + 3)} disabled={value !== null || winner} />
-                ))}
-            </div>
-            <div className="board-row">
-                {board.slice(6, 9).map((value, i) => (
-                    <Square key={i + 6} value={value} onSquareClick={() => handleMove(i + 6)} disabled={value !== null || winner} />
-                ))}
+            <div className="gameBoard-div">
+                <div className="board-row">
+                    {board.slice(0, 3).map((value, i) => (
+                        <Square key={i} value={value} onSquareClick={() => handleMove(i)} disabled={value !== null || winner} />
+                    ))}
+                </div>
+                <div className="board-row">
+                    {board.slice(3, 6).map((value, i) => (
+                        <Square key={i + 3} value={value} onSquareClick={() => handleMove(i + 3)} disabled={value !== null || winner} />
+                    ))}
+                </div>
+                <div className="board-row">
+                    {board.slice(6, 9).map((value, i) => (
+                        <Square key={i + 6} value={value} onSquareClick={() => handleMove(i + 6)} disabled={value !== null || winner} />
+                    ))}
+                </div>
             </div>
             {
                 winner !== null || board.every(cell => cell !== null) ? (
-                    <button onClick={() => navigate("/home")}>Exit Game</button>
+                    <button className="auth-button" onClick={() => navigate("/home")}>Exit Game</button>
                 ) : null
             }
         </main>

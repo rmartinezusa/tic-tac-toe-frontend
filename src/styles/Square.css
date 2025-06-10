@@ -1,20 +1,23 @@
+
 .square {
-    background: #fff;
-    border: 1px solid #999;
-    float: left;
-    font-size: 24px;
-    font-weight: bold;
-    line-height: 34px;
-    height: 34px;
-    margin-right: -1px;
-    margin-top: -1px;
-    padding: 0;
-    text-align: center;
-    width: 34px;
+  width: 100px;
+  height: 100px;
+  font-size: 3rem;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: middle;
+  background-color: var(--grey-hover-button);
+  color: var(--light-almond);
+  border: 2px solid var(--light-almond-2);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.board-row:after {
-    clear: both;
-    content: '';
-    display: table;
+.square:hover {
+  background-color: var(--grey-button);
+}
+
+.square:disabled {
+  background-color: var(--deeper-charcoal);
+  cursor: not-allowed;
 }

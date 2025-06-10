@@ -5,7 +5,7 @@
 }
 
 .player-card {
-  background: #222;
+  background: var(--deeper-charcoal);
   color: #eee;
   padding: 1rem;
   border-radius: 16px;

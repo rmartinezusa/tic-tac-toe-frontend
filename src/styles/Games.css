@@ -1,0 +1,38 @@
+.games-section {
+  padding: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.games-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.games-list {
+    background: var(--deep-charcoal);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.game-item {
+  background: var(--deeper-charcoal);
+  color: #eee;
+  padding: 1rem;
+  border-radius: 16px;
+  margin: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  text-align: center;
+}
+
+.game-link {
+    text-decoration: none;
+    color: var(--light-almond);
+}
+
+.game-item p {
+  margin: 0.25rem 0;
+}

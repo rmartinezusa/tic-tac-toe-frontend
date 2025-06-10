@@ -1,5 +1,4 @@
 import { useState } from "react";
-import "../styles/square.css";
 import Square from "./Square";
 
 function calculateWinner(squares) {
