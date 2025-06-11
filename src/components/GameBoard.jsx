@@ -5,7 +5,6 @@ import { useGetGameQuery } from "../services/gameSlice";
 import { selectUserId } from "../services/authSlice";
 import { useSocket } from "../context/SocketContext";
 import Square from "./Square";
-import "../styles/square.css";
 
 function GameBoard() {
     const userId = useSelector(selectUserId);
