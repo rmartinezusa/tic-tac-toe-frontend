@@ -11,7 +11,7 @@ export function SocketProvider({ token, children }) {
 
     useEffect(() => {
         if (token && !socketRef.current) {
-            const socket = io("http://localhostTTTest:3000", {
+            const socket = io("https://tic-tac-toe-backend-a6zz.onrender.com", {
                 auth: { token },
                 autoConnect: true,
             });
