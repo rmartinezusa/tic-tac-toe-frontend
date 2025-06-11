@@ -4,7 +4,7 @@ import './App.css';
 import './styles/Auth.css';
 import './styles/Home.css';
 import './styles/Players.css';
-import './styles/square.css';
+import './styles/Square.css';
 import './styles/Games.css';
 import './styles/GameBoard.css';
 
