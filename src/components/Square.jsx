@@ -1,4 +1,3 @@
-import "../styles/square.css";
 
 function Square({ value, onSquareClick, disabled }) {
     return (
