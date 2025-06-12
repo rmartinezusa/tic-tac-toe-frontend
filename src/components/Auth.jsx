@@ -111,10 +111,11 @@ function Auth() {
             <button className="auth-button register-button" type="button" onClick={() => setIsLogin(!isLogin)}>
                 {altCopy}
             </button>
-
-            {localError && <p role="alert">{localError}</p>} 
-            {isLogin && loginError && <p role="alert">{loginError.data}</p>}
-            {!isLogin && registerError && <p role="alert">{registerError.data}</p>}
+            {(loginError || registerError || localError) && (
+                <p role="alert">
+                    {localError || loginError?.data || registerError?.data}
+                </p>
+            )}
         </div>
     );
 }
